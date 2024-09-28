@@ -100,16 +100,80 @@ var firstLetterCount = function(array, letter) {
     }, 0);
 };
 
-var friendFirstLetterCount = function(array) {
+var friendFirstLetterCount = function(array, customer, letter) {
+    // use _.reduce to find the customer object from the input array whose name matches the input customer name (customer), and then reassign the input customer name to the customer object
+    customer = _.reduce(array, function(accumulator, current) {
+        if (current.name === customer) { // compare the input customer name to each of the current customer's names
+            accumulator = current; // set accumulator to the current customer if said customer's name is equal to the inputted customer name
+        }
+        // return accumulator
+        return accumulator;
+    });
 
+    // use firstLetterCount to get the number of customers in the customer's friends array whose name starts with the input letter by creating a counter and then incrementing said counter each time a name starting with the input letter is found
+    // return the result of calling firstLetterCount
+    return firstLetterCount(customer.friends, letter);
 };
 
-var friendsCount = function(array) {
-
+var friendsCount = function(array, name) {
+    // use _.reduce to get the names of all of the customers in the input array whose friends array/list includes the input name by using an empty array as a seed and then pushing the name of each customer into the seeded array each time a name matching the input name is found in the current customer's friends array
+    // return the array that results from calling _.reduce
+    return _.reduce(array, function(accumulator, current) {
+        if (_.reduce(current.friends, function(accumulator, current) { // use _.reduce to return true if the current friends array of the current customer contains the input name and false otherwise
+            if (current.name === name) { // compare the input name to each of the current friend names in the current friends array
+                accumulator = true; // set accumulator to true if said friend name is equal to the inputted name
+            }
+            // return accumulator
+            return accumulator;
+        }, false)) { // accumulator is set to false by default
+            accumulator.push(current.name); // push the current customer's name to the accumulator if a matching name was found in its friends array
+        }
+        // return accumulator
+        return accumulator;
+    }, []);
 };
 
 var topThreeTags = function(array) {
+    // use _.reduce to access the tags array of each of the customers in the input array, making sure to use an empty object as a seed
+    // set the object that results from calling _.reduce to a variable
+    const allTags = _.reduce(array, function(accumulator, current) {
+        accumulator = _.reduce(current.tags, function(accumulator, current) { // use _.reduce to push each tag onto the accumulator object, making sure to include the outer _.reduce's accumulator as the seed and to assign the result of this _.reduce's call to the outer _.reduce's accumulator
+            if (!accumulator[current]) { // check if the accumulator object does not include the current tag as a key yet
+                accumulator[current] = 1; // assign the current tag as a key and set it to 1 if so
+            } else (
+                accumulator[current]++ // otherwise, increment the value of the current tag key/value pair in accumulator by 1
+            )
+            // return accumulator
+            return accumulator;
+        }, accumulator) // accumulator is set to the outer _.reduce's accumulator
+        
+        // return accumulator
+        return accumulator;
+    }, {});
 
+    // create an empty array to hold the top three most common tags
+    const topThreeArr = [];
+    
+    // loop through the allTags object
+    for (let key in allTags) {
+        if (topThreeArr.length < 3) { // check if the topThreeArr is still under 3 in its length
+            topThreeArr.push(key); // push the current key into topThreeArr if so
+        } else {
+            // otherwise, loop through the topThreeArr array
+            for (let i = 0; i < topThreeArr.length; i++) {
+                // check if the value in the allTags object that uses the value in the current index as a key name is less than the value of the current key/value pair in the outer loop
+                if (allTags[topThreeArr[i]] < allTags[key]) {
+                    // set the value of the current topThreeArr index to the current key if so
+                    topThreeArr[i] = key;
+                    // break to prevent the same tag from showing up multiple times in the topThreeArr array
+                    break;
+                }
+            }
+        }
+    }
+
+    // return topThreeArr
+    return topThreeArr;
 };
 
 var genderCount = function(array) {
