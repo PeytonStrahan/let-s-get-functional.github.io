@@ -177,7 +177,17 @@ var topThreeTags = function(array) {
 };
 
 var genderCount = function(array) {
-
+    // use _.reduce to get the genders of all of the customers in the input array by using an empty object as a seed
+    // return the object that results from calling _.reduce
+    return _.reduce(array, function(accumulator, current) {
+        if (!accumulator[current.gender]) { // check if the accumulator object does not include the current gender as a key yet
+            accumulator[current.gender] = 1; // assign the current gender as a key and set it to 1 if so
+        } else (
+            accumulator[current.gender]++ // otherwise, increment the value of the current gender key/value pair in accumulator by 1
+        )
+        // return accumulator
+        return accumulator;
+    }, {}) // accumulator is set to an empty object at first
 };
 
 //////////////////////////////////////////////////////////////////////
